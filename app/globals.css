@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-night: #070c1f;
+  --color-panel: #0d1430;
+  --color-fg: #e8eeff;
+  --color-isobar: #9fb4e8;
+  --color-ice: #6fe0ff;
+  --color-plasma: #ff6a55;
+
+  --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* Expanded width for display type. Mona Sans has a wdth axis up to 125. */
+.wide {
+  font-stretch: 125%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ice);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Faint coordinate grid behind the whole page, like a radar scope. */
+.scope-grid {
+  background-image:
+    linear-gradient(to right, rgb(159 180 232 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(159 180 232 / 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Map load: isobars draw in, then fronts and labels settle. */
+.isobar {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.6s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+.band {
+  opacity: 0;
+  animation: settle 1.2s ease-out 0.3s forwards;
+}
+.front,
+.center {
+  opacity: 0;
+  animation: settle 0.6s ease-out 1s forwards;
+}
+
+/* The one ambient motion: a radar sweep over the map. */
+.sweep {
+  background: conic-gradient(from 0deg, transparent 0deg 290deg, rgb(111 224 255 / 0.05) 330deg, rgb(111 224 255 / 0.22) 359deg, transparent 360deg);
+  animation: spin 7s linear infinite;
+}
+
+.ping {
+  animation: ping 2.4s ease-out infinite;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes settle {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  .isobar,
+  .band,
+  .front,
+  .center {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  .sweep,
+  .ping {
+    animation: none;
+  }
+  .sweep {
+    display: none;
+  }
 }
