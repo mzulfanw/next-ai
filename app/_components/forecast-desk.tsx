@@ -5,52 +5,47 @@ import { useState, type ReactNode } from "react";
 type Line = { text: string; confidence: number };
 type Chain = { id: string; name: string; summary: string; lines: Line[] };
 
-export function ForecastDesk({ chains, maps }: { chains: Chain[]; maps: ReactNode[] }) {
+export function ForecastDesk({ chains, maps, icons }: { chains: Chain[]; maps: ReactNode[]; icons: ReactNode[] }) {
   const [active, setActive] = useState(0);
   const chain = chains[active];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-isobar/15 bg-panel/70 shadow-[0_40px_120px_-40px_rgb(111_224_255/0.25)] backdrop-blur">
-      {/* Instrument header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-isobar/12 px-3 py-3 sm:px-4">
-        <div role="group" aria-label="Choose a chain" className="flex flex-wrap gap-1 rounded-full bg-night/60 p-1">
-          {chains.map((c, i) => (
-            <button
-              key={c.id}
-              type="button"
-              aria-pressed={i === active}
-              onClick={() => setActive(i)}
-              className="min-h-9 rounded-full px-3.5 text-sm font-medium text-fg/65 transition-colors hover:text-fg aria-pressed:bg-fg aria-pressed:text-night sm:px-4"
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
-        <p className="flex items-center gap-2 pr-1 text-xs text-fg/55">
-          <span className="relative flex size-2" aria-hidden="true">
-            <span className="ping absolute inset-0 rounded-full bg-ice" />
-            <span className="relative size-2 rounded-full bg-ice" />
-          </span>
-          Sample forecast, issued 07:00 UTC
-        </p>
+    <div>
+      <div role="group" aria-label="Choose a chain" className="mb-8 flex flex-wrap gap-3">
+        {chains.map((c, i) => (
+          <button
+            key={c.id}
+            type="button"
+            aria-pressed={i === active}
+            onClick={() => setActive(i)}
+            className={`${i % 2 ? "sketch-alt" : "sketch"} flex min-h-12 items-center gap-2 bg-paper py-1.5 pr-4 pl-2 text-base font-semibold transition-[background-color,transform] hover:-rotate-1 aria-pressed:bg-marker aria-pressed:shadow-[3px_4px_0_var(--color-ink)]`}
+          >
+            <span className="size-9">{icons[i]}</span>
+            {c.name}
+          </button>
+        ))}
       </div>
 
-      <div className="grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <figure className="relative overflow-hidden border-isobar/12 lg:border-r">
-          <div key={chain.id}>{maps[active]}</div>
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden mix-blend-screen">
-            <div className="sweep absolute top-1/2 left-1/2 aspect-square w-[150%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-12">
+        <figure className="relative -rotate-[0.6deg]">
+          <span aria-hidden="true" className="tape absolute -top-3 left-8 z-10 h-6 w-24 -rotate-6" />
+          <span aria-hidden="true" className="tape absolute -right-3 -bottom-2 z-10 h-6 w-24 rotate-[-38deg]" />
+          <div className="graph sketch press overflow-hidden p-2 sm:p-3">
+            <div key={chain.id}>{maps[active]}</div>
           </div>
-          <figcaption className="sr-only">Sample pressure map for {chain.name}</figcaption>
+          <figcaption className="hand mt-3 text-sm text-ink/60">
+            sample map for {chain.name}, drawn 07:00 UTC
+          </figcaption>
         </figure>
 
-        <article aria-live="polite" className="border-t border-isobar/12 p-5 sm:p-6 lg:border-t-0">
-          <h3 className="text-xl leading-snug font-semibold text-pretty sm:text-[1.375rem]">{chain.summary}</h3>
-          <ul className="mt-6 space-y-5">
+        <article aria-live="polite" className="ruled relative pl-6 sm:pl-8">
+          <span aria-hidden="true" className="absolute top-0 bottom-0 left-0 w-0.5 bg-margin" />
+          <h3 className="hand text-[1.5rem] leading-[32px] font-bold text-pretty sm:text-[1.625rem]">{chain.summary}</h3>
+          <ul className="mt-8">
             {chain.lines.map((l) => (
-              <li key={l.text} className="grid grid-cols-[3rem_1fr] gap-4">
+              <li key={l.text} className="mb-8 grid grid-cols-[3.5rem_1fr] gap-3">
                 <Confidence value={l.confidence} />
-                <p className="text-[0.9375rem] leading-relaxed text-fg/75">{l.text}</p>
+                <p className="text-[1.0625rem] leading-[32px]">{l.text}</p>
               </li>
             ))}
           </ul>
@@ -61,14 +56,11 @@ export function ForecastDesk({ chains, maps }: { chains: Chain[]; maps: ReactNod
 }
 
 function Confidence({ value }: { value: number }) {
-  const color = value >= 70 ? "bg-ice" : value >= 50 ? "bg-isobar" : "bg-plasma";
+  const tone = value >= 70 ? "text-pen" : value >= 50 ? "text-ink" : "text-redpen";
   return (
-    <div className="pt-0.5" title={`Model confidence ${value}%`}>
-      <span className="block text-sm font-semibold tabular-nums">{value}%</span>
-      <span className="mt-1.5 block h-1 w-full overflow-hidden rounded-full bg-fg/10" aria-hidden="true">
-        <span className={`block h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
-      </span>
-      <span className="sr-only">confidence</span>
+    <div title={`Model confidence ${value}%`} className={`hand leading-[32px] ${tone}`}>
+      <span className="text-lg font-bold tabular-nums">{value}%</span>
+      <span className="sr-only"> confidence</span>
     </div>
   );
 }

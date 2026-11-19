@@ -24,6 +24,7 @@ export type ChainForecast = {
   id: string;
   name: string;
   summary: string;
+  weather: "sun" | "partly" | "storm" | "wind";
   centers: PressureCenter[];
   fronts: Front[];
   lines: ForecastLine[];
@@ -33,6 +34,7 @@ export const forecasts: ChainForecast[] = [
   {
     id: "ethereum",
     name: "Ethereum",
+    weather: "partly",
     summary:
       "High pressure over lending pools, with a weak warm front coming in from the rollups.",
     centers: [
@@ -67,6 +69,7 @@ export const forecasts: ChainForecast[] = [
   {
     id: "solana",
     name: "Solana",
+    weather: "storm",
     summary:
       "A deep low over new token pairs. Gusty, with a cold front sweeping out of the memecoin markets.",
     centers: [
@@ -102,6 +105,7 @@ export const forecasts: ChainForecast[] = [
   {
     id: "base",
     name: "Base",
+    weather: "sun",
     summary:
       "Mild and settled. A slow warm front of new wallets, mostly from consumer apps.",
     centers: [
@@ -136,6 +140,7 @@ export const forecasts: ChainForecast[] = [
   {
     id: "bitcoin",
     name: "Bitcoin",
+    weather: "wind",
     summary:
       "A broad high over long-term wallets. A cold front of exchange deposits is building to the east.",
     centers: [

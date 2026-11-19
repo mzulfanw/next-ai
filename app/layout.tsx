@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Mona_Sans } from "next/font/google";
+import { Shantell_Sans } from "next/font/google";
 import "./globals.css";
 
-const mona = Mona_Sans({
-  variable: "--font-mona",
+const shantell = Shantell_Sans({
+  variable: "--font-shantell",
   subsets: ["latin"],
-  axes: ["wdth"],
+  axes: ["INFM", "BNCE"],
 });
 
 export const metadata: Metadata = {
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070c1f",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${mona.variable} antialiased`}>
-      <body className="min-h-dvh bg-night font-sans text-fg">{children}</body>
+    <html lang="en" className={`${shantell.variable} antialiased`}>
+      <body className="min-h-dvh overflow-x-clip bg-paper font-sans text-ink">{children}</body>
     </html>
   );
 }

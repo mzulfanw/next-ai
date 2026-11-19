@@ -10,10 +10,10 @@ export function SubscribeForm({ id }: { id: string }) {
 
   return (
     <form action={action} className="w-full max-w-md" noValidate>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-fg/70">
-        Email address
+      <label htmlFor={id} className="hand mb-2 block text-base">
+        your email
       </label>
-      <div className="flex flex-col gap-2 rounded-xl border border-isobar/20 bg-night/60 p-1.5 transition-colors focus-within:border-ice/60 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <input
           id={id}
           name="email"
@@ -25,12 +25,12 @@ export function SubscribeForm({ id }: { id: string }) {
           placeholder="you@example.com"
           aria-invalid={state.status === "error" || undefined}
           aria-describedby={`${id}-msg`}
-          className="min-h-11 flex-1 rounded-lg bg-transparent px-3 text-base text-fg outline-none placeholder:text-fg/35 focus-visible:outline-none"
+          className="sketch min-h-12 flex-1 bg-paper px-4 text-base outline-none placeholder:text-ink/40 focus-visible:border-pen"
         />
         <button
           type="submit"
           disabled={pending}
-          className="min-h-11 rounded-lg bg-ice px-5 font-semibold text-night transition-[background-color,box-shadow] hover:bg-white hover:shadow-[0_0_24px_rgb(111_224_255/0.5)] disabled:opacity-60"
+          className="sketch-alt press min-h-12 bg-marker px-5 font-bold disabled:opacity-60"
         >
           {pending ? "Subscribing…" : "Get the forecast"}
         </button>
@@ -38,7 +38,7 @@ export function SubscribeForm({ id }: { id: string }) {
       <p
         id={`${id}-msg`}
         aria-live="polite"
-        className={`mt-2 min-h-5 text-sm ${state.status === "error" ? "text-plasma" : "text-fg/55"}`}
+        className={`mt-3 min-h-5 text-sm ${state.status === "error" ? "font-semibold text-redpen" : "text-ink/65"}`}
       >
         {state.message || "Free. One email each morning. Unsubscribe in one click."}
       </p>

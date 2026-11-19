@@ -1,19 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-night: #070c1f;
-  --color-panel: #0d1430;
-  --color-fg: #e8eeff;
-  --color-isobar: #9fb4e8;
-  --color-ice: #6fe0ff;
-  --color-plasma: #ff6a55;
+  --color-paper: #ffffff;
+  --color-ink: #1c2340; /* ballpoint, nearly black */
+  --color-pen: #2346d8; /* blue biro */
+  --color-redpen: #e0362c;
+  --color-marker: #ffe45c; /* highlighter */
+  --color-rule: #d9e4f3; /* notebook rules */
+  --color-margin: #f3a5a0;
 
-  --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-shantell), ui-rounded, system-ui, sans-serif;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  /* Shantell Sans: informal 0 reads like clean print, 100 like handwriting. */
+  font-variation-settings: "INFM" 15, "BNCE" 0;
+}
+
+/* Handwritten voice for headings, annotations and the map. */
+.hand,
+h1,
+h2 {
+  font-variation-settings: "INFM" 100, "BNCE" 40;
 }
 
 h1,
@@ -22,92 +35,87 @@ h3 {
   text-wrap: balance;
 }
 
-/* Expanded width for display type. Mona Sans has a wdth axis up to 125. */
-.wide {
-  font-stretch: 125%;
-}
-
 :focus-visible {
-  outline: 2px solid var(--color-ice);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: 2.5px dashed var(--color-pen);
+  outline-offset: 4px;
 }
 
-/* Faint coordinate grid behind the whole page, like a radar scope. */
-.scope-grid {
+/* Hand-drawn box: uneven radii make a border look drawn rather than ruled. */
+.sketch {
+  border: 2px solid var(--color-ink);
+  border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+}
+.sketch-alt {
+  border: 2px solid var(--color-ink);
+  border-radius: 18px 225px 18px 255px / 255px 18px 225px 18px;
+}
+.press {
+  box-shadow: 3px 4px 0 var(--color-ink);
+  transition:
+    transform 120ms,
+    box-shadow 120ms;
+}
+.press:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 5px 0 var(--color-ink);
+}
+.press:active {
+  transform: translate(2px, 3px);
+  box-shadow: 1px 1px 0 var(--color-ink);
+}
+
+/* Notebook paper: ruled lines every 32px plus a red margin. */
+.ruled {
+  background-color: var(--color-paper);
+  background-image: linear-gradient(to bottom, transparent 31px, var(--color-rule) 31px, var(--color-rule) 32px);
+  background-size: 100% 32px;
+}
+.graph {
+  background-color: var(--color-paper);
   background-image:
-    linear-gradient(to right, rgb(159 180 232 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(159 180 232 / 0.06) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+    linear-gradient(to right, var(--color-rule) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-rule) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Map load: isobars draw in, then fronts and labels settle. */
-.isobar {
+/* Masking tape holding the map down */
+.tape {
+  background: rgb(255 228 92 / 0.75);
+  mix-blend-mode: multiply;
+}
+
+/* The one orchestrated motion: the map gets sketched in, then labels appear. */
+.ink {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: draw 1.6s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+  animation: draw 1.3s cubic-bezier(0.5, 0, 0.3, 1) forwards;
 }
-.band {
+.late {
   opacity: 0;
-  animation: settle 1.2s ease-out 0.3s forwards;
+  animation: appear 0.4s ease-out 1.1s forwards;
 }
-.front,
-.center {
-  opacity: 0;
-  animation: settle 0.6s ease-out 1s forwards;
-}
-
-/* The one ambient motion: a radar sweep over the map. */
-.sweep {
-  background: conic-gradient(from 0deg, transparent 0deg 290deg, rgb(111 224 255 / 0.05) 330deg, rgb(111 224 255 / 0.22) 359deg, transparent 360deg);
-  animation: spin 7s linear infinite;
-}
-
-.ping {
-  animation: ping 2.4s ease-out infinite;
-}
-
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
   }
 }
-@keyframes settle {
+@keyframes appear {
   to {
     opacity: 1;
-  }
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes ping {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(2.4);
-    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .isobar,
-  .band,
-  .front,
-  .center {
+  .ink,
+  .late {
     animation: none;
     stroke-dashoffset: 0;
     opacity: 1;
   }
-  .sweep,
-  .ping {
-    animation: none;
-  }
-  .sweep {
-    display: none;
+  .press,
+  .press:hover,
+  .press:active {
+    transition: none;
+    transform: none;
   }
 }
